@@ -15,6 +15,10 @@ public class PlayerDataHolder {
         this.storage = storage;
     }
 
+    public List<PlayerData> getData(){
+        return data;
+    }
+
     public PlayerData loadPlayerData(UUID uuid){
         PlayerData playerData = storage.playerDataConfig.load(uuid);
         data.add(playerData);
@@ -42,6 +46,12 @@ public class PlayerDataHolder {
 
     public boolean hasLoadedData(UUID uuid){
         return getPlayerData(uuid) != null;
+    }
+
+    public void setPlayerData(UUID uuid, PlayerData pd){
+        PlayerData dataInList = getPlayerData(uuid);
+        data.remove(dataInList);
+        data.add(pd);
     }
 
 }

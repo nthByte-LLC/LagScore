@@ -1,3 +1,11 @@
 Prefix: "[LagScore]"
 
 Starting Lag Score: 20
+Safe Line: 19.8
+Score Line: 19.5
+Heal Factor: 0.005
+Hurt Factor: 0.01
+Check Speed: 10.0
+
+Kick Message: "Bleep bloop you're making the server lag!"
+Connection Deny Message: "You can't join the server at the moment!"

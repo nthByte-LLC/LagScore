@@ -1,6 +1,6 @@
-package net.dohaw.play.lagscore.utils;
+package net.dohaw.play.lagscore.runnables;
 
-public class TPSUtils {
+public class TPSChecker implements Runnable{
 
     public static int TICK_COUNT = 0;
     public final static long[] TICKS = new long[600];
@@ -24,10 +24,6 @@ public class TPSUtils {
 
     public static long getElapsed(int tickID)
     {
-        if (TICK_COUNT- tickID >= TICKS.length)
-        {
-        }
-
         long time = TICKS[(tickID % TICKS.length)];
         return System.currentTimeMillis() - time;
     }

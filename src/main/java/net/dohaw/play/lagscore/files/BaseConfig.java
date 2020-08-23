@@ -17,4 +17,32 @@ public class BaseConfig extends Config {
         return config.getInt("Starting Lag Score");
     }
 
+    public double getSafeLine(){
+        return config.getDouble("Safe Line");
+    }
+
+    public double getScoreLine(){
+        return config.getDouble("Score Line");
+    }
+
+    public double getHealFactor(){
+        return config.getDouble("Heal Factor");
+    }
+
+    public double getHurtFactor(){
+        return config.getDouble("Hurt Factor");
+    }
+
+    public double getCheckSpeed(){
+        return config.getDouble("Check Speed");
+    }
+
+    public String getKickMessage(){
+        return config.getString("Kick Message");
+    }
+
+    public String getConnectionDenyMessage(){
+        return config.getString("Connection Deny Message");
+    }
+
 }
