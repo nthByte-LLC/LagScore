@@ -2,3 +2,5 @@ name: LagScore
 version: ${project.version}
 main: net.dohaw.play.lagscore.LagScore
 api-version: 1.13
+depend:
+  - CoreAPI

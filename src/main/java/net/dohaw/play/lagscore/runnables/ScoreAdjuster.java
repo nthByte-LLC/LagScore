@@ -34,21 +34,20 @@ public class ScoreAdjuster extends BukkitRunnable {
             double scoreLine = baseConfig.getScoreLine();
             double safeLine = baseConfig.getSafeLine();
 
-            double newScore = -1;
+            double newScore;
             if(tps < scoreLine){
                 double hurtFactor = baseConfig.getHurtFactor();
                 newScore = score + (( 20 - score ) * hurtFactor * (scoreLine - tps));
-            }else if(tps > scoreLine){
+            }else{
                 double healFactor = baseConfig.getHealFactor();
                 newScore = score - (( score ) * healFactor * (tps - scoreLine));
-            }else if(tps < score && tps < safeLine){
+            }
+            pd.setScore(newScore);
+            playerDataHolder.setPlayerData(uuid, pd);
+
+            if(tps < newScore && tps < safeLine){
                 String kickMsg = baseConfig.getKickMessage();
                 player.kickPlayer(kickMsg);
-            }
-
-            if(newScore != -1){
-                pd.setScore(newScore);
-                playerDataHolder.setPlayerData(uuid, pd);
             }
 
         }

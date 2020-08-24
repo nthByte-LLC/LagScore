@@ -39,7 +39,11 @@ public class PlayerDataConfig extends Config {
 
     public boolean hasRecordedData(UUID uuid){
         ConfigurationSection cs = config.getConfigurationSection("Data");
-        return cs.contains(uuid.toString());
+        if(cs != null){
+            return cs.contains(uuid.toString());
+        }else{
+            return false;
+        }
     }
 
 }

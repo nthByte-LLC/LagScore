@@ -32,7 +32,7 @@ public class PlayerDataHolder {
     }
 
     public void savePlayerData(UUID uuid){
-
+        storage.playerDataConfig.save(getPlayerData(uuid));
     }
 
     public PlayerData getPlayerData(UUID uuid){
