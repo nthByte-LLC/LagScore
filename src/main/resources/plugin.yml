@@ -4,3 +4,10 @@ main: net.dohaw.play.lagscore.LagScore
 api-version: 1.13
 depend:
   - CoreAPI
+
+commands:
+  lagscore:
+    aliases:
+      - ls
+      - lags
+      - lscore
