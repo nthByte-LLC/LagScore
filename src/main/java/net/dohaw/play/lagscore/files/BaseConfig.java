@@ -37,6 +37,10 @@ public class BaseConfig extends Config {
         return config.getDouble("Check Speed");
     }
 
+    public double getKickFactor(){
+        return config.getDouble("Kick Factor");
+    }
+
     public String getKickMessage(){
         return config.getString("Kick Message");
     }
