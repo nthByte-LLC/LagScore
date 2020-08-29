@@ -11,3 +11,7 @@ commands:
       - ls
       - lags
       - lscore
+
+permissions:
+  lagscore.use:
+    default: op
