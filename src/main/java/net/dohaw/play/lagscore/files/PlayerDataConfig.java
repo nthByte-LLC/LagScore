@@ -46,4 +46,18 @@ public class PlayerDataConfig extends Config {
         }
     }
 
+    public double getScore(String playerName){
+
+        ConfigurationSection cs = config.getConfigurationSection("Data");
+        if(cs != null){
+            for(String uuid : cs.getKeys(false)){
+                String name = config.getString("Data." + uuid + ".Name");
+                if(playerName.equalsIgnoreCase(name)){
+                    return config.getDouble("Data." + uuid + ".Score");
+                }
+            }
+        }
+        return -1;
+    }
+
 }
