@@ -4,7 +4,6 @@ import net.dohaw.play.lagscore.Storage;
 import net.dohaw.play.lagscore.files.BaseConfig;
 import net.dohaw.play.lagscore.playerdata.PlayerData;
 import net.dohaw.play.lagscore.playerdata.PlayerDataHolder;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -68,7 +67,7 @@ public class ScoreAdjuster extends BukkitRunnable {
                 double kickFactor = baseConfig.getKickFactor();
                 newScore = newScore + ((20 - newScore) * kickFactor);
                 pd.setScore(newScore);
-                playerDataHolder.setPlayerData(uuid, pd);
+                playerDataHolder.updatePlayerData(uuid, pd);
             }
 
             kickedPlayers = new ArrayList<>();
@@ -90,7 +89,7 @@ public class ScoreAdjuster extends BukkitRunnable {
             double kickFactor = baseConfig.getKickFactor();
             double newPlayerScore = playerScore + ((20 - playerScore ) * kickFactor);
             pd.setScore(newPlayerScore);
-            playerDataHolder.setPlayerData(pd.getUUID(), pd);
+            playerDataHolder.updatePlayerData(pd.getUUID(), pd);
             playerDataHolder.savePlayerData(pd.getUUID());
         }
     }

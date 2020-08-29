@@ -48,7 +48,7 @@ public class PlayerDataHolder {
         return getPlayerData(uuid) != null;
     }
 
-    public void setPlayerData(UUID uuid, PlayerData pd){
+    public void updatePlayerData(UUID uuid, PlayerData pd){
         PlayerData dataInList = getPlayerData(uuid);
         data.remove(dataInList);
         data.add(pd);
