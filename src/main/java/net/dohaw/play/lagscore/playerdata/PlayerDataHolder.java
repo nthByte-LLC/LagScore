@@ -31,6 +31,11 @@ public class PlayerDataHolder {
         return playerData;
     }
 
+    public void unloadPlayerData(UUID uuid){
+        PlayerData pd = getPlayerData(uuid);
+        data.remove(pd);
+    }
+
     public void savePlayerData(UUID uuid){
         storage.playerDataConfig.save(getPlayerData(uuid));
     }

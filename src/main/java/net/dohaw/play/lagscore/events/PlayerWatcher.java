@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
@@ -37,6 +38,13 @@ public class PlayerWatcher implements Listener {
                 playerDataHolder.createPlayerData(uuid);
             }
         }
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent e){
+        UUID uuid = e.getPlayer().getUniqueId();
+        playerDataHolder.savePlayerData(uuid);
+        playerDataHolder.unloadPlayerData(uuid);
     }
 
     @EventHandler
