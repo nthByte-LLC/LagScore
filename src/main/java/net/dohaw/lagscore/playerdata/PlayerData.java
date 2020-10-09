@@ -1,4 +1,4 @@
-package net.dohaw.play.lagscore.playerdata;
+package net.dohaw.lagscore.playerdata;
 
 import lombok.Getter;
 import lombok.Setter;

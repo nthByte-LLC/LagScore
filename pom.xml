@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.dohaw.play</groupId>
+    <groupId>net.dohaw</groupId>
     <artifactId>LagScore</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>LagScore</name>
@@ -40,6 +40,12 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>net.dohaw</pattern>
+                                    <shadedPattern>relocated.net.dohaw</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
@@ -72,10 +78,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>CoreAPI</groupId>
-            <artifactId>CoreAPI</artifactId>
-            <version>2.3.8-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>net.dohaw</groupId>
+            <artifactId>CoreLib</artifactId>
+            <version>3.0.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

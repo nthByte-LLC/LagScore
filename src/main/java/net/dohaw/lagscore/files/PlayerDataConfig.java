@@ -1,8 +1,8 @@
-package net.dohaw.play.lagscore.files;
+package net.dohaw.lagscore.files;
 
-import me.c10coding.coreapi.files.Config;
-import net.dohaw.play.lagscore.LagScore;
-import net.dohaw.play.lagscore.playerdata.PlayerData;
+import net.dohaw.corelib.Config;
+import net.dohaw.lagscore.LagScore;
+import net.dohaw.lagscore.playerdata.PlayerData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.UUID;
@@ -22,7 +22,7 @@ public class PlayerDataConfig extends Config {
 
     public PlayerData create(UUID uuid){
         PlayerData playerData = new PlayerData(uuid);
-        BaseConfig baseConfig = ((LagScore)plugin).storage.baseConfig;
+        BaseConfig baseConfig = ((LagScore)plugin).getBaseConfig();
         int startingScore = baseConfig.getStartingLagScore();
         playerData.setScore(startingScore);
         return playerData;

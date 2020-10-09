@@ -1,6 +1,7 @@
-package net.dohaw.play.lagscore.playerdata;
+package net.dohaw.lagscore.playerdata;
 
-import net.dohaw.play.lagscore.Storage;
+import net.dohaw.lagscore.LagScore;
+import net.dohaw.lagscore.files.PlayerDataConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,10 +10,10 @@ import java.util.UUID;
 public class PlayerDataHolder {
 
     private List<PlayerData> data = new ArrayList<>();
-    private Storage storage;
+    private PlayerDataConfig playerDataConfig;
 
-    public PlayerDataHolder(Storage storage){
-        this.storage = storage;
+    public PlayerDataHolder(LagScore plugin){
+        this.playerDataConfig = plugin.getPlayerDataConfig();
     }
 
     public List<PlayerData> getData(){
@@ -20,13 +21,13 @@ public class PlayerDataHolder {
     }
 
     public PlayerData loadPlayerData(UUID uuid){
-        PlayerData playerData = storage.playerDataConfig.load(uuid);
+        PlayerData playerData = playerDataConfig.load(uuid);
         data.add(playerData);
         return playerData;
     }
 
     public PlayerData createPlayerData(UUID uuid){
-        PlayerData playerData = storage.playerDataConfig.create(uuid);
+        PlayerData playerData = playerDataConfig.create(uuid);
         data.add(playerData);
         return playerData;
     }
@@ -37,7 +38,7 @@ public class PlayerDataHolder {
     }
 
     public void savePlayerData(UUID uuid){
-        storage.playerDataConfig.save(getPlayerData(uuid));
+        playerDataConfig.save(getPlayerData(uuid));
     }
 
     public PlayerData getPlayerData(UUID uuid){

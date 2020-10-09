@@ -1,9 +1,9 @@
-package net.dohaw.play.lagscore.runnables;
+package net.dohaw.lagscore.runnables;
 
-import net.dohaw.play.lagscore.Storage;
-import net.dohaw.play.lagscore.files.BaseConfig;
-import net.dohaw.play.lagscore.playerdata.PlayerData;
-import net.dohaw.play.lagscore.playerdata.PlayerDataHolder;
+import net.dohaw.lagscore.LagScore;
+import net.dohaw.lagscore.files.BaseConfig;
+import net.dohaw.lagscore.playerdata.PlayerData;
+import net.dohaw.lagscore.playerdata.PlayerDataHolder;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -13,22 +13,22 @@ import java.util.UUID;
 
 public class ScoreAdjuster extends BukkitRunnable {
 
-    private Storage storage;
+    private LagScore plugin;
     private PlayerDataHolder playerDataHolder;
     private BaseConfig baseConfig;
     private boolean isInRecoveryMode = false;
     private List<UUID> kickedPlayers = new ArrayList<>();
 
-    public ScoreAdjuster(Storage storage){
-        this.storage = storage;
-        this.playerDataHolder = storage.playerDataHolder;
-        this.baseConfig = storage.baseConfig;
+    public ScoreAdjuster(LagScore plugin){
+        this.playerDataHolder = plugin.getPlayerDataHolder();
+        this.baseConfig = plugin.getBaseConfig();
+        this.plugin = plugin;
     }
 
     @Override
     public void run() {
 
-        for(Player player : storage.plugin.getServer().getOnlinePlayers()){
+        for(Player player : plugin.getServer().getOnlinePlayers()){
 
             UUID uuid = player.getUniqueId();
             PlayerData pd = playerDataHolder.getPlayerData(uuid);

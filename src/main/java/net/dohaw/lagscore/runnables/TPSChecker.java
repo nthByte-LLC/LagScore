@@ -1,4 +1,4 @@
-package net.dohaw.play.lagscore.runnables;
+package net.dohaw.lagscore.runnables;
 
 public class TPSChecker implements Runnable{
 

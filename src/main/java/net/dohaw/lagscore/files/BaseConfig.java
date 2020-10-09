@@ -1,6 +1,6 @@
-package net.dohaw.play.lagscore.files;
+package net.dohaw.lagscore.files;
 
-import me.c10coding.coreapi.files.Config;
+import net.dohaw.corelib.Config;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BaseConfig extends Config {

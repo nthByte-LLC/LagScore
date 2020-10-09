@@ -1,4 +1,4 @@
-package net.dohaw.play.lagscore.utils;
+package net.dohaw.lagscore.utils;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

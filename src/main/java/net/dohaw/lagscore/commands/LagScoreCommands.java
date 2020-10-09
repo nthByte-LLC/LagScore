@@ -1,23 +1,20 @@
-package net.dohaw.play.lagscore.commands;
+package net.dohaw.lagscore.commands;
 
-import me.c10coding.coreapi.chat.ChatFactory;
-import net.dohaw.play.lagscore.LagScore;
-import net.dohaw.play.lagscore.Storage;
-import net.dohaw.play.lagscore.files.PlayerDataConfig;
-import net.dohaw.play.lagscore.playerdata.PlayerData;
-import net.dohaw.play.lagscore.playerdata.PlayerDataHolder;
-import net.dohaw.play.lagscore.runnables.ScoreAdjuster;
-import net.dohaw.play.lagscore.utils.ScoreUtils;
+import net.dohaw.corelib.ChatSender;
+import net.dohaw.lagscore.LagScore;
+import net.dohaw.lagscore.files.BaseConfig;
+import net.dohaw.lagscore.files.PlayerDataConfig;
+import net.dohaw.lagscore.playerdata.PlayerData;
+import net.dohaw.lagscore.playerdata.PlayerDataHolder;
+import net.dohaw.lagscore.runnables.ScoreAdjuster;
+import net.dohaw.lagscore.utils.ScoreUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,16 +23,16 @@ import java.util.stream.Collectors;
 
 public class LagScoreCommands implements CommandExecutor {
 
-    private Storage storage;
+    private LagScore plugin;
     private PlayerDataHolder playerDataHolder;
-    private ChatFactory chatFactory;
     private PlayerDataConfig playerDataConfig;
+    private BaseConfig baseConfig;
 
-    public LagScoreCommands(Storage storage){
-        this.storage = storage;
-        this.playerDataHolder = storage.playerDataHolder;
-        this.chatFactory = storage.chatFactory;
-        this.playerDataConfig = storage.playerDataConfig;
+    public LagScoreCommands(LagScore plugin){
+        this.playerDataHolder = plugin.getPlayerDataHolder();
+        this.playerDataConfig = plugin.getPlayerDataConfig();
+        this.baseConfig = plugin.getBaseConfig();
+        this.plugin = plugin;
     }
 
     @Override
@@ -44,9 +41,9 @@ public class LagScoreCommands implements CommandExecutor {
         if(sender.hasPermission("lagscore.use")){
 
             if(args[0].equalsIgnoreCase("reload") && args.length == 1) {
-                storage.baseConfig.reloadConfig();
+                plugin.getBaseConfig().reloadConfig();
                 restartScoreAdjuster();
-                storage.api.getChatFactory().sendPlayerMessage("LagScore has been reloaded!", false, sender, null);
+                ChatSender.sendPlayerMessage("LagScore has been reloaded!", false, sender, null);
             /*
                 I understand this is probably not the most efficient way to sort the list, but I was lazy
              */
@@ -55,7 +52,7 @@ public class LagScoreCommands implements CommandExecutor {
                 List<PlayerData> playerData = playerDataHolder.getData();
                 Map<String, Double> playerScores = new HashMap<>();
 
-                chatFactory.sendPlayerMessage("Lag Scores:", false, sender, null);
+                ChatSender.sendPlayerMessage("Lag Scores:", false, sender, null);
                 for (PlayerData pd : playerData) {
 
                     String name = pd.getName();
@@ -72,16 +69,16 @@ public class LagScoreCommands implements CommandExecutor {
                 for (Map.Entry<String, Double> en : sortedData.entrySet()) {
                     String name = en.getKey();
                     double score = en.getValue();
-                    chatFactory.sendPlayerMessage("&e" + name + ": &c" + score, false, sender, null);
+                    ChatSender.sendPlayerMessage("&e" + name + ": &c" + score, false, sender, null);
                 }
             }else if(args[0].equalsIgnoreCase("see") && args.length == 2){
                 String playerName = args[1];
                 double score = playerDataConfig.getScore(playerName);
                 score = ScoreUtils.roundToDecimalPoints(score, 3);
                 if(score != -1){
-                    chatFactory.sendPlayerMessage("&e" + playerName + "'s&f LagScore is &e" + score, false, sender, null);
+                    ChatSender.sendPlayerMessage("&e" + playerName + "'s&f LagScore is &e" + score, false, sender, null);
                 }else{
-                    chatFactory.sendPlayerMessage("This player does not have any recorded LagScore!", false, sender, null);
+                    ChatSender.sendPlayerMessage("This player does not have any recorded LagScore!", false, sender, null);
                 }
             }else if(args.length == 2){
 
@@ -94,17 +91,17 @@ public class LagScoreCommands implements CommandExecutor {
                     try{
                         score = Double.parseDouble(args[1]);
                     }catch(IllegalArgumentException e){
-                        chatFactory.sendPlayerMessage("This is not a valid number!", false, sender, null);
+                        ChatSender.sendPlayerMessage("This is not a valid number!", false, sender, null);
                         return false;
                     }
 
                     PlayerData targetPlayerData = playerDataHolder.getPlayerData(targetPlayer.getUniqueId());
                     targetPlayerData.setScore(score);
                     playerDataHolder.updatePlayerData(targetPlayer.getUniqueId(), targetPlayerData);
-                    chatFactory.sendPlayerMessage("You have changed &e" + playerName + "'s&f LagScore to &e" + score, false, sender, null);
+                    ChatSender.sendPlayerMessage("You have changed &e" + playerName + "'s&f LagScore to &e" + score, false, sender, null);
 
                 }else{
-                    chatFactory.sendPlayerMessage("This player is either not online or isn't a valid player!", false, sender, null);
+                    ChatSender.sendPlayerMessage("This player is either not online or isn't a valid player!", false, sender, null);
                 }
 
             }
@@ -117,13 +114,12 @@ public class LagScoreCommands implements CommandExecutor {
 
     private void restartScoreAdjuster(){
 
-        LagScore plugin = (LagScore) storage.plugin;
         BukkitRunnable scoreAdjuster = plugin.getScoreAdjuster();
         scoreAdjuster.cancel();
 
-        double checkSpeed = storage.baseConfig.getCheckSpeed();
+        double checkSpeed = baseConfig.getCheckSpeed();
 
-        ScoreAdjuster newScoreAdjuster = new ScoreAdjuster(storage);
+        ScoreAdjuster newScoreAdjuster = new ScoreAdjuster(plugin);
         newScoreAdjuster.runTaskTimer(plugin, 0L, (long) (checkSpeed * 20) );
         plugin.setScoreAdjuster(newScoreAdjuster);
     }
