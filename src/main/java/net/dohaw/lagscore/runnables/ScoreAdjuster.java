@@ -4,6 +4,7 @@ import net.dohaw.lagscore.LagScore;
 import net.dohaw.lagscore.files.BaseConfig;
 import net.dohaw.lagscore.playerdata.PlayerData;
 import net.dohaw.lagscore.playerdata.PlayerDataHolder;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -67,7 +68,7 @@ public class ScoreAdjuster extends BukkitRunnable {
                 double kickFactor = baseConfig.getKickFactor();
                 newScore = newScore + ((20 - newScore) * kickFactor);
                 pd.setScore(newScore);
-                playerDataHolder.updatePlayerData(uuid, pd);
+                playerDataHolder.updatePlayerData(pd);
             }
 
             kickedPlayers = new ArrayList<>();
@@ -76,22 +77,30 @@ public class ScoreAdjuster extends BukkitRunnable {
                 player.kickPlayer(kickMsg);
                 kickedPlayers.add(player.getUniqueId());
             }
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                playerDataHolder.savePlayerData(uuid);
+            });
 
-            playerDataHolder.savePlayerData(uuid);
         }
 
     }
 
     private void penalizePlayers(){
+
         for(UUID u : kickedPlayers){
+
             PlayerData pd = playerDataHolder.getPlayerData(u);
-            double playerScore = pd.getScore();
-            double kickFactor = baseConfig.getKickFactor();
-            double newPlayerScore = playerScore + ((20 - playerScore ) * kickFactor);
-            pd.setScore(newPlayerScore);
-            playerDataHolder.updatePlayerData(pd.getUUID(), pd);
-            playerDataHolder.savePlayerData(pd.getUUID());
+            if(pd != null){
+                double playerScore = pd.getScore();
+                double kickFactor = baseConfig.getKickFactor();
+                double newPlayerScore = playerScore + ((20 - playerScore ) * kickFactor);
+                pd.setScore(newPlayerScore);
+                playerDataHolder.updatePlayerData(pd);
+                playerDataHolder.savePlayerData(pd.getUUID());
+            }
+
         }
+
     }
 
 }

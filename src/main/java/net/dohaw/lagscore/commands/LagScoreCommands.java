@@ -15,10 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LagScoreCommands implements CommandExecutor {
@@ -40,74 +37,77 @@ public class LagScoreCommands implements CommandExecutor {
 
         if(sender.hasPermission("lagscore.use")){
 
-            if(args[0].equalsIgnoreCase("reload") && args.length == 1) {
-                plugin.getBaseConfig().reloadConfig();
-                restartScoreAdjuster();
-                ChatSender.sendPlayerMessage("LagScore has been reloaded!", false, sender, null);
-            /*
-                I understand this is probably not the most efficient way to sort the list, but I was lazy
-             */
-            }else if(args[0].equalsIgnoreCase("list") && args.length == 1) {
+            if(args.length != 0){
 
-                List<PlayerData> playerData = playerDataHolder.getData();
-                Map<String, Double> playerScores = new HashMap<>();
+                if(args[0].equalsIgnoreCase("reload") && args.length == 1) {
+                    plugin.getBaseConfig().reloadConfig();
+                    restartScoreAdjuster();
+                    ChatSender.sendPlayerMessage("LagScore has been reloaded!", false, sender, null);
+                /*
+                    I understand this is probably not the most efficient way to sort the list, but I was lazy
+                 */
+                }else if(args[0].equalsIgnoreCase("list") && args.length == 1) {
 
-                ChatSender.sendPlayerMessage("Lag Scores:", false, sender, null);
-                for (PlayerData pd : playerData) {
+                    Map<UUID, PlayerData> playerData = playerDataHolder.getData();
+                    Map<String, Double> playerScores = new HashMap<>();
 
-                    String name = pd.getName();
-                    double score = pd.getScore();
+                    ChatSender.sendPlayerMessage("Lag Scores:", false, sender, null);
+                    for (Map.Entry<UUID, PlayerData> entry : playerData.entrySet()) {
 
-                    double rounded = ScoreUtils.roundToDecimalPoints(score, 3);
+                        PlayerData pd = entry.getValue();
+                        String name = pd.getName();
+                        double score = pd.getScore();
+                        double rounded = ScoreUtils.roundToDecimalPoints(score, 3);
 
-                    playerScores.put(name, rounded);
-                }
-
-                Map<String, Double> sortedData = playerScores.entrySet().stream().sorted(Map.Entry.comparingByValue())
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-
-                for (Map.Entry<String, Double> en : sortedData.entrySet()) {
-                    String name = en.getKey();
-                    double score = en.getValue();
-                    ChatSender.sendPlayerMessage("&e" + name + ": &c" + score, false, sender, null);
-                }
-            }else if(args[0].equalsIgnoreCase("see") && args.length == 2){
-                String playerName = args[1];
-                double score = playerDataConfig.getScore(playerName);
-                score = ScoreUtils.roundToDecimalPoints(score, 3);
-                if(score != -1){
-                    ChatSender.sendPlayerMessage("&e" + playerName + "'s&f LagScore is &e" + score, false, sender, null);
-                }else{
-                    ChatSender.sendPlayerMessage("This player does not have any recorded LagScore!", false, sender, null);
-                }
-            }else if(args.length == 2){
-
-                String playerName = args[0];
-
-                if(isValidPlayer(playerName)){
-
-                    Player targetPlayer = Bukkit.getPlayer(playerName);
-                    double score;
-                    try{
-                        score = Double.parseDouble(args[1]);
-                    }catch(IllegalArgumentException e){
-                        ChatSender.sendPlayerMessage("This is not a valid number!", false, sender, null);
-                        return false;
+                        playerScores.put(name, rounded);
                     }
 
-                    PlayerData targetPlayerData = playerDataHolder.getPlayerData(targetPlayer.getUniqueId());
-                    targetPlayerData.setScore(score);
-                    playerDataHolder.updatePlayerData(targetPlayer.getUniqueId(), targetPlayerData);
-                    ChatSender.sendPlayerMessage("You have changed &e" + playerName + "'s&f LagScore to &e" + score, false, sender, null);
+                    Map<String, Double> sortedData = playerScores.entrySet().stream().sorted(Map.Entry.comparingByValue())
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-                }else{
-                    ChatSender.sendPlayerMessage("This player is either not online or isn't a valid player!", false, sender, null);
+                    for (Map.Entry<String, Double> en : sortedData.entrySet()) {
+                        String name = en.getKey();
+                        double score = en.getValue();
+                        ChatSender.sendPlayerMessage("&e" + name + ": &c" + score, false, sender, null);
+                    }
+                }else if(args[0].equalsIgnoreCase("see") && args.length == 2){
+                    String playerName = args[1];
+                    double score = playerDataConfig.getScore(playerName);
+                    score = ScoreUtils.roundToDecimalPoints(score, 3);
+                    if(score != -1){
+                        ChatSender.sendPlayerMessage("&e" + playerName + "'s&f LagScore is &e" + score, false, sender, null);
+                    }else{
+                        ChatSender.sendPlayerMessage("This player does not have any recorded LagScore!", false, sender, null);
+                    }
+                }else if(args.length == 2){
+
+                    String playerName = args[0];
+
+                    if(isValidPlayer(playerName)){
+
+                        Player targetPlayer = Bukkit.getPlayer(playerName);
+                        double score;
+                        try{
+                            score = Double.parseDouble(args[1]);
+                        }catch(IllegalArgumentException e){
+                            ChatSender.sendPlayerMessage("This is not a valid number!", false, sender, null);
+                            return false;
+                        }
+
+                        PlayerData targetPlayerData = playerDataHolder.getPlayerData(targetPlayer.getUniqueId());
+                        targetPlayerData.setScore(score);
+                        playerDataHolder.updatePlayerData(targetPlayerData);
+                        ChatSender.sendPlayerMessage("You have changed &e" + playerName + "'s&f LagScore to &e" + score, false, sender, null);
+
+                    }else{
+                        ChatSender.sendPlayerMessage("This player is either not online or isn't a valid player!", false, sender, null);
+                    }
+
                 }
 
             }
 
         }
-
 
         return false;
     }
@@ -125,8 +125,9 @@ public class LagScoreCommands implements CommandExecutor {
     }
 
     private boolean isValidPlayer(String playerName){
-        List<PlayerData> playerData = playerDataHolder.getData();
-        for(PlayerData pd : playerData){
+        Map<UUID, PlayerData> playerData = playerDataHolder.getData();
+        for(Map.Entry<UUID, PlayerData> entry : playerData.entrySet()){
+            PlayerData pd = entry.getValue();
             if(pd.getName().equalsIgnoreCase(playerName)){
                 return true;
             }

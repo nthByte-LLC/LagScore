@@ -46,10 +46,7 @@ public final class LagScore extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        List<PlayerData> data = playerDataHolder.getData();
-        for(PlayerData pd : data){
-            playerDataHolder.savePlayerData(pd.getUUID());
-        }
+        playerDataHolder.saveAllData();
     }
 
     private void startRunnables(){
