@@ -77,9 +77,7 @@ public class ScoreAdjuster extends BukkitRunnable {
                 player.kickPlayer(kickMsg);
                 kickedPlayers.add(player.getUniqueId());
             }
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                playerDataHolder.savePlayerData(uuid);
-            });
+            playerDataHolder.savePlayerData(uuid);
 
         }
 
